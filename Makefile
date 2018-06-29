@@ -9,7 +9,7 @@ all: ${PDF}
 	platex $<
 	while ( grep -q '^LaTeX Warning: Label(s) may have changed' $*.log) \
 	do platex $<; done
-	dvipdfmx $*
+	dvipdfmx -l $*
 
 description.tex: description.md
 	@cat $^ \
