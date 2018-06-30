@@ -1,9 +1,10 @@
 description.tex
 manuscript.pdf
-*.log 
+*.log
 *.aux
 *.dvi
 *.out
 *.blg
 *.bbl
 *.xbb
+*.synctex.gz

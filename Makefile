@@ -2,14 +2,14 @@ PDF = manuscript.pdf
 
 all: ${PDF}
 
-%.pdf:  %.tex ipsj.cls description.tex ipsjsort.bst reference.bib
-	platex $<
+%.pdf:  %.tex ipsj.cls description.tex ipsjsort.bst reference.bib Makefile
+	ptex2pdf -e -l -ot '-synctex=1' -od '-f ptex-ipaex.map' $<
 	- pbibtex $*
-	platex $<
-	platex $<
+	ptex2pdf -e -l -ot '-synctex=1' -od '-f ptex-ipaex.map' $<
+	ptex2pdf -e -l -ot '-synctex=1' -od '-f ptex-ipaex.map' $<
 	while ( grep -q '^LaTeX Warning: Label(s) may have changed' $*.log) \
-	do platex $<; done
-	dvipdfmx -l $*
+	do ptex2pdf -e -l -ot '-synctex=1' -od '-f ptex-ipaex.map' $<; done
+	# dvipdfmx $*
 
 description.tex: description.md
 	@cat $^ \
@@ -22,4 +22,4 @@ description.tex: description.md
 #	extractbb test.png
 
 clean:
-	@rm -rf description.{dvi,log,tex} manuscript.{pdf,aux,dvi,log,out,blg,bbl} *.xbb
+	@rm -rf description.{dvi,log,tex} manuscript.{pdf,aux,dvi,log,out,blg,bbl,.synctex.gz} *.xbb
