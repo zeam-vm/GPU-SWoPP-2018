@@ -37,21 +37,21 @@ Kyoto University}
 \author{高瀬 英希}{TAKASE Hideki}{Kyoto-u}[takase@i.kyoto-u.ac.jp]
 
 \begin{abstract}
-ElixirではFlowというMapReduceに近いモデルの並列プログラミングライブラリが広く普及している。Flowを用いるとパイプライン演算子を用いた簡潔な表現でマルチコアCPUの並列性を活用することができる。我々はFlowによるプログラム記述がGPGPUにも容易に適用できるという着想を得て，OpenCLによるプロトタイプを実装した。現行のGPUの一般的なアーキテクチャであるSIMDでは，単純な構造で均質で大量にあるデータを同じような命令列で処理する場合に効果を発揮する。一方，Flowでは，単純な構造で均質で大量にあるデータであるリスト構造に対し，パイプライン演算子でつながれた一連の命令列で処理する。そこで，この一連の命令列をひとまとめにしてGPU向けにコンパイルし，入力となるリスト構造を配列データにまとめてコードとともにGPUに転送して実行することで高速化を図れるというのが我々の着想である。そこで，素体のロジスティック写像を用いたベンチマークプログラムを開発し，期待される性能向上がどのくらいになるかを評価した。Mac Pro (Mid 2010)とATI Radeon HD 5770 で構成されたシステムで評価した。言語は Elixir とC言語で比較し，逐次実行と並列実行，CPU/GPU利用，インライン展開の有無などで比較した。その結果，Elixirで実行した場合と比べてGPGPUを利用すると10倍以上の速度向上が期待できることがわかった。今後，LLVMを用いてコード生成器を含む処理系を開発する予定である。
+ElixirではFlowというMapReduceに近いモデルの並列プログラミングライブラリが広く普及している。Flowを用いるとパイプライン演算子を用いた簡潔な表現でマルチコアCPUの並列性を活用することができる。我々はFlowによるプログラム記述がGPGPUにも容易に適用できるという着想を得て，OpenCLによるプロトタイプを実装した。現行のGPUの一般的なアーキテクチャであるSIMDでは，単純な構造で均質で大量にあるデータを同じような命令列で処理する場合に効果を発揮する。一方，Flowでは，単純な構造で均質で大量にあるデータであるリスト構造に対し，パイプライン演算子でつながれた一連の命令列で処理する。そこで，この一連の命令列をひとまとめにしてGPU向けにコンパイルし，入力となるリスト構造を配列データにまとめてコードとともにGPUに転送して実行することで高速化を図る。そこで，素体のロジスティック写像を用いたベンチマークプログラムを開発し，期待される性能向上がどのくらいになるかを評価した。Mac Pro (Mid 2010)と Google Compute Engine (GCE)でで評価した。言語は Elixir，Elixir から Rust によるネイティブコードを呼び出したもの(Rustler)，Rust によるネイティブコード，Python で比較した。その結果，次の3つの結果が得られた: (1) GPU を使用したRustlerのコードは，Elixir単体のコードと比べて4.43〜8.23倍高速になった (2) GPU を使用した Rustler のコードは，GPUを使用するネイティブコードと比べて，1.48〜1.54倍程度遅くなっただけである (3) GPUを使用した Rustler のコードは，GPU を使用する Python のコードと比べて，3.67倍高速である。今後，LLVMを用いてコード生成器を含む処理系を開発する予定である。
 \end{abstract}
 
 
 \begin{jkeyword}
-Elixir，C++，Node.js，マルチタスク
+Elixir，GPGPU，並列プログラミング言語，並列計算，MapReduce
 \end{jkeyword}
 
 
 \begin{eabstract}
-Elixir has Flow that is a popular parallel programming library similar to MapReduce. Flow can realize parallel programming on multi-core CPUs by simple description using pipeline operators. We ideate that code description of Flow can be applied to GPGPU easily, and implements prototypes. The SIMD architecture that current general GPUs adopt is effective when a single instruction sequence processes a simple, homogeneous and mass data structure, and code using Flow is a single instruction sequence connected by pipeline operators that processes a linked-list structure, which is asimple, homogeneous and mass data structure. Thus, we propose a code optimization method by compiling the instruction sequence for the GPU, sending it and a mass array composed of data from the linked-list, and executing them. We develop a benchmark suit of the logistic maps over prime fields, and evaluate performance of the proposal system using it. We evaluate it using a system including Mac Pro (Mid 2010) and ATI Radeon HD 5770. We compare Elixir and the C language, sequential and parallel execution, CPU and GPU, and with/without inlining. The results shows that the benchmark using C languages and GPGPU is over 10 times faster than that using Elixir and CPU. We plan to develop a processing system including a code generator using LLVM.
+Elixir has Flow that is a popular parallel programming library similar to MapReduce. Flow can realize parallel programming on multi-core CPUs by simple description using pipeline operators. We ideate that code description of Flow can be applied to GPGPU easily, and implements prototypes. The SIMD architecture that current general GPUs adopt is effective when a single instruction sequence processes a simple, homogeneous and mass data structure, and code using Flow is a single instruction sequence connected by pipeline operators that processes a linked-list structure, which is asimple, homogeneous and mass data structure. Thus, we propose a code optimization method by compiling the instruction sequence for the GPU, sending it and a mass array composed of data from the linked-list, and executing them. We develop a benchmark suit of the logistic maps over prime fields, and evaluate performance of the proposal system using it. We evaluate it using Mac Pro (Mid 2010) and Google Compute Engine (GCE). We compare Elixir, Rustler, which is Elixir that calls native code by Rust, native code by Rust and Python. We get the following results: (1) Elixir and Rustler code using GPU is 4.43--8.23 times and 7.43--9.64 times faster than pure Elixir and Python code executed by only CPU, respectively. (2) The performance gap of Elixir and Rustler code using GPU by our strategy is only 1.48--1.54 times compared with native code using GPU. (3) Additionally, our Hastega method for Elixir achieves 3.67 times faster than Python code with GPU. We plan to develop a processing system including a code generator using LLVM.
 \end{eabstract}
 
 \begin{ekeyword}
-Elixir, C++, Node.js, multi-tasking
+Elixir, GPGPU, Parallel programming languages, Parallel computing, MapReduce.
 \end{ekeyword}
 
 \maketitle
