@@ -46,11 +46,11 @@ $ open manuscript.pdf
 
 ## タイトルや著者，スタイル等を変更する場合
 
-[manuscript.tex](https://github.com/zacky1972/UIprototyping-SPLE/blob/master/manuscript.tex) を編集してください。
+[manuscript.tex](https://github.com/zacky1972/GPU-SWoPP-2018/blob/master/manuscript.tex) を編集してください。
 
 ## 本文を編集する場合
 
-[description.md](https://github.com/zacky1972/UIprototyping-SPLE/blob/master/description.md) を編集してください。Markdown 記法で記述できます。
+[description.md](https://github.com/zacky1972/GPU-SWoPP-2018/blob/master/description.md) を編集してください。Markdown 記法で記述できます。
 
 ## 画像の追加
 
