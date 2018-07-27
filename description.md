@@ -48,3 +48,32 @@ CUDA\cite{CUDA}と，CuPy\cite{CuPy}のような関連ライブラリと比べ�
 \end{figure}
 
 我々の実装はGitHubに公開されている\footnote{LogisticMap: Benchmark of Logistic Map using integer calculation and Flow, available at https://github.com/zeam-vm/logistic\_map}．
+
+
+# Hastegaの特長: 容易な設定
+
+\tabref{setting}にGCE(Google Compute Engine)\cite{GCE}上でのインストール・設定プロセスの比較を示す．
+
+Hastegaのインストールはビルドツールが自動で設定してくれるので煩雑ではない．必要なことは，OpenCL\cite{OpenCL}をインストールすること，Elixir\cite{Elixir}とRust\cite{Rust}をインストールして設定すること，Hastegaをインストールすることだけである．
+
+
+CuPy\cite{CuPy}におけるCUDA\cite{CUDA}もしくはOpenCL\cite{OpenCL}のインストールは，Hastegaと比べてより多くの作業手順を必要とする．その理由は，Cupyが古いバージョンのCUDA\cite{CUDA}を必要とするからである．この解決方法を知るためにStack Overflow\cite{StackOverflow}のようなQ\&Aサイトを調べ上げる必要があった．
+
+Hastegaの欠点は，Elixir\cite{Elixir}とRust\cite{Rust}という2つのプログラミング言語のインストールと設定を必要とする点である．
+
+
+\begin{table}[t]
+\centering
+\caption{GCE上でのインストール・設定プロセスの手順の比較}
+\ecaption{Comparison of Steps of Installation and Setting Processes in GCE}
+\label{setting}
+{\small
+\begin{tabular}{lrr}
+                               & \multicolumn{1}{l}{CuPy} & \multicolumn{1}{l}{Hastega} \\ \hline
+CUDAもしくはOpenCLのインストール   & 4                        & 1                           \\
+プログラミング言語のインストール     & 0                        & 4                           \\
+ライブラリのインストール           & 2                        & 1                           \\ \hline
+\end{tabular}
+}
+\end{table}
+
