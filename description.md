@@ -126,3 +126,19 @@ CuPy \cite{CuPy}       & N/A                    & 4.1.0
 }
 \end{table*}
 
+## ベンチマーク
+
+本実験では下記のベンチマークを用いた:
+
+* Elixir\_recursive: Elixir\cite{Elixir}のみで書かれている．ロジスティック写像の計算は10回の再帰呼出しで実装されている．
+* Elixir\_inlining: Elixirのみで書かれている．ロジスティック写像の計算はFlowの中にインライン展開されている．
+* Rustler\_CPU: ElixirとRust\cite{Rust}で書かれており，Rustler\cite{Rustler}を用いている．ロジスティック写像はRustで書かれたネイティブコードでCPUで計算している．scoped-pool\cite{scoped-pool}によるスレッドプールを用いた非同期NIF(Native Implemented Function)呼出しを用いており，単一スレッドで動作する．
+* Rustler\_CPU\_multi: Rustler\_CPUと同様であるが，ロジスティック写像をrayon\cite{rayon}による複数スレッドで計算する点が異なる．ただし，実装上の制約でrayonのスレッドプールは有効にできなかった．
+* Rustler\_GPU: ElixirとRustで書かれており，Rustlerを用いている．ロジスティック写像はRustとocl\cite{ocl}を用いて書いたネイティブコードでOpenCL\cite{OpenCL}経由でGPUで計算されている．
+* Empty: 実行効率の観点で比較するためのダミーベンチマークである．ElixirのリストとRustのベクターの返還を含むが，ロジスティック写像の計算は含まない．
+* Rust\_CPU: Rustのみで書かれている．ロジスティック写像は単一スレッドのCPUで計算されている．
+* Rust\_CPU\_multi: Rust\_CPUと同様であるが，ロジスティック写像はrayon\cite{rayon}を用いて複数スレッドで実行されている．かつ，rayonのスレッドプールが有効である．
+* Rust\_GPU: Rustだけで書かれている．ロジスティック写像はoclを用いてOpenCL経由でGPUで計算されている．
+* Python\_CPU: Python\cite{Python}とNumPy\cite{NumPy}で書かれている．
+* Python\_GPU: Python\cite{Python}とCuPy\cite{CuPy}で書かれており，GPUで実行する．
+
