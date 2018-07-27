@@ -77,3 +77,52 @@ CUDAもしくはOpenCLのインストール   & 4                        & 1    
 }
 \end{table}
 
+# パフォーマンス評価
+
+## 評価環境
+
+我々は素体によるロジスティック写像\cite{Miyazaki14}をベンチマークとして採用した．これは下記のような漸化式で表される．
+
+\begin{displaymath}
+  X_{i+1} = \mu_p X_i (X_i + 1) \bmod p
+\end{displaymath}
+
+これを採用した理由は，GPUのアセンブリコードに容易に変換できる整数演算を用いて負荷の高い計算をすることができるためである．
+
+我々はMac Pro (Mid 2010)とGCE\cite{GCE}という2つの環境で評価した．
+
+1. Mac Pro (Mid 2010) は1つの2.8GHzのクアッドコア Intel Xeon のCPUと，16GB のメモリ，そして1024MBのメモリを持つATI Radeon HD 5770で構成される．
+
+2. GCEの設定は次のとおりである．
+	* Machine type: custom (8 vCPUs，16GBメモリ)
+	* CPU platform: Intel Broadwell
+	* GPU: NVIDIA Tesla K80 (x1)
+	* Zone: us-west1-b
+
+\tabref{versions}に用いたソフトウェアのバージョンを示す．
+
+\begin{table*}[t]
+\centering
+\caption{用いたソフトウェアのバージョン}
+\ecaption{Versions of Software}
+\label{versions}
+{\small
+\begin{tabular}{l|ll}
+                       & Mac Pro (Mid 2010)     & GCE                                      \\ \hline
+OS                     & Sierra 10.12.6         & ubuntu 16.04                             \\
+Elixir \cite{Elixir}   & 1.6.6 (OTP 21)         & 1.6.6 (OTP 21)                           \\
+Flow \cite{Flow}       & 0.14                   & 0.14                                     \\
+Rust \cite{Rust}       & 1.27.0                 & 1.27.0                                   \\
+OpenCL \cite{OpenCL}   & 1.2                    & 1.2                                      \\
+Rustler \cite{Rustler} & 0.17.1                 & 0.17.1                                   \\
+ocl \cite{ocl}         & 0.18                   & 0.18                                     \\
+rayon \cite{rayon}     & 1.0                    & 1.0                                      \\
+scoped-pool \cite{scoped-pool} & 1.0.0          & 1.0.0                                    \\ \hline
+Python \cite{Python}   & 3.6.0 (Anaconda 4.3.0) & 3.5.2                                    \\
+CUDA \cite{CUDA}       & N/A                    & 9.0 (in case of using CuPy), 9.2 (other) \\
+NumPy \cite{NumPy}     & 1.11.3                 & 1.14.3                                   \\
+CuPy \cite{CuPy}       & N/A                    & 4.1.0
+\end{tabular}
+}
+\end{table*}
+
