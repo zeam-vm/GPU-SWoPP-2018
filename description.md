@@ -11,7 +11,7 @@ GPGPUの研究開発が注目されてきた理由の1つは，機械学習が�
 
 我々が提案するHastegaは，MapReduce モデル\cite{Dean:2008:MSD:1327452.1327492}に似ているElixirのFlow\cite{Flow}を用いたプログラミングスタイルがGPGPUのコードに容易に変換できるという仮説に基づいている．またGPUを直接操作するネイティブコードを記述するために，ElixirからRust\cite{Rust}で記述したネイティブコードを呼出すためのライブラリであるRustler\cite{Rustler}と，RustでOpenCL\cite{OpenCL}を用いてGPUを駆動するocl\cite{ocl}を採用して実装した．
 
-本稿の以下の構成は次のとおりである: 第2章ではElixirコードからGPUを駆動するコードに変換する中核となるアイデアとHastegaの実装について提案する．第3章ではインストールと設定のプロセスについて示す．第4章では我々が行なった実験の実行環境と，ベンチマークについての記述，結果と考察を示す．第5章では本稿をまとめて将来課題について述べる．
+本稿の以下の構成は次のとおりである: 第2章ではElixirコードからGPUを駆動するコードに変換する中核となるアイデアとHastegaの実装について提案する．第3章では我々が行なった実験の実行環境と，ベンチマークについての記述，結果と考察を示す．第4章ではインストールと設定のプロセスについて示す．第5章では本稿をまとめて将来課題について述べる．
 
 # Hastegaの方針と実装
 
@@ -35,7 +35,30 @@ MapReduceモデル\cite{Dean:2008:MSD:1327452.1327492}に基づくFlow\cite{Flow
 \label{fig:flow}
 \end{figure}
 
-**(TODO: GPUのコード例)**
+\figref{fig:flow}を元にOpenCLで実行できるコードを\figref{fig:OpenCL-code}に示す．Flowのコードの命令列`foo |> bar`をそのまま関数`foo`と`bar`を続けざまに呼び出すコードに変換し，範囲`1..1000`によって生成されるリストをあらかじめ配列にして`input`として与え，結果を`output`で受取るようにプログラムを構成する．
+
+\begin{figure}[t]
+\setbox0\vbox{
+{\small
+\begin{verbatim}
+__kernel void calc(
+  __global long* input,
+  __global long* output) {
+  size_t i = get_global_id(0);
+  long temp = input[i];
+  temp = foo(temp);
+  temp = bar(temp);
+  output[i] = temp;
+}
+\end{verbatim}
+}
+}
+\centerline{\fbox{\box0}}
+\caption{図\ref{fig:flow}のOpenCLコード}
+\ecaption{OpenCL code of figure \ref{fig:flow}}
+\label{fig:OpenCL-code}
+\end{figure}
+
 
 \figref{fig:Hastega-arch}にHastegaのアーキテクチャを示す．我々はRust\cite{Rust}でネイティブコードを記述し，Rustler\cite{Rustler}とocl\cite{ocl}を用いた．このことによりとても設定が容易になる．プログラミング言語とOpenCL\cite{OpenCL}とHastegaをそれぞれ1行程度のコマンドでインストールするだけである．これは，Python\cite{Python}や
 CUDA\cite{CUDA}と，CuPy\cite{CuPy}のような関連ライブラリと比べて大きな優位性を持っている．
@@ -49,33 +72,6 @@ CUDA\cite{CUDA}と，CuPy\cite{CuPy}のような関連ライブラリと比べ�
 
 我々の実装はGitHubに公開されている\footnote{LogisticMap: Benchmark of Logistic Map using integer calculation and Flow, available at https://github.com/zeam-vm/logistic\_map}．
 
-
-# Hastegaの特長: 容易な設定
-
-\tabref{setting}にGCE(Google Compute Engine)\cite{GCE}上でのインストール・設定プロセスの比較を示す．
-
-Hastegaのインストールはビルドツールが自動で設定してくれるので煩雑ではない．必要なことは，OpenCL\cite{OpenCL}をインストールすること，Elixir\cite{Elixir}とRust\cite{Rust}をインストールして設定すること，Hastegaをインストールすることだけである．
-
-
-CuPy\cite{CuPy}におけるCUDA\cite{CUDA}もしくはOpenCL\cite{OpenCL}のインストールは，Hastegaと比べてより多くの作業手順を必要とする．その理由は，Cupyが古いバージョンのCUDA\cite{CUDA}を必要とするからである．この解決方法を知るためにStack Overflow\cite{StackOverflow}のようなQ\&Aサイトを調べ上げる必要があった．
-
-Hastegaの欠点は，Elixir\cite{Elixir}とRust\cite{Rust}という2つのプログラミング言語のインストールと設定を必要とする点である．
-
-
-\begin{table}[t]
-\centering
-\caption{GCE上でのインストール・設定プロセスの手順の比較}
-\ecaption{Comparison of Steps of Installation and Setting Processes in GCE}
-\label{setting}
-{\small
-\begin{tabular}{lrr}
-                               & \multicolumn{1}{l}{CuPy} & \multicolumn{1}{l}{Hastega} \\ \hline
-CUDAもしくはOpenCLのインストール   & 4                        & 1                           \\
-プログラミング言語のインストール     & 0                        & 4                           \\
-ライブラリのインストール           & 2                        & 1                           \\ \hline
-\end{tabular}
-}
-\end{table}
 
 # パフォーマンス評価
 
@@ -184,11 +180,38 @@ Python\_GPU                   & Python           & CuPy (GPU)     & N/A         
 }
 \end{table*}
 
+# 設定容易性の評価
+
+\tabref{setting}にGCE(Google Compute Engine)\cite{GCE}上でのインストール・設定プロセスの比較を示す．
+
+Hastegaのインストールはビルドツールが自動で設定してくれるので煩雑ではない．必要なことは，OpenCL\cite{OpenCL}をインストールすること，Elixir\cite{Elixir}とRust\cite{Rust}をインストールして設定すること，Hastegaをインストールすることだけである．
+
+
+CuPy\cite{CuPy}におけるCUDA\cite{CUDA}もしくはOpenCL\cite{OpenCL}のインストールは，Hastegaと比べてより多くの作業手順を必要とする．その理由は，Cupyが古いバージョンのCUDA\cite{CUDA}を必要とするからである．この解決方法を知るためにStack Overflow\cite{StackOverflow}のようなQ\&Aサイトを調べ上げる必要があった．
+
+CuPyではプログラミング言語はPythonがプリインストールされているのに対し，HastegaではElixir\cite{Elixir}とRust\cite{Rust}という2つのプログラミング言語のインストールと設定を必要とする点が提案手法の方が多く作業手順を要している．
+
+
+\begin{table}[t]
+\centering
+\caption{GCE上でのインストール・設定プロセスの手順の比較}
+\ecaption{Comparison of Steps of Installation and Setting Processes in GCE}
+\label{setting}
+{\small
+\begin{tabular}{lrr}
+                               & \multicolumn{1}{l}{CuPy} & \multicolumn{1}{l}{Hastega} \\ \hline
+CUDAもしくはOpenCLのインストール   & 4                        & 1                           \\
+プログラミング言語のインストール     & 0                        & 4                           \\
+ライブラリのインストール           & 2                        & 1                           \\ \hline
+\end{tabular}
+}
+\end{table}
+
 # まとめと将来課題
 
 Pythonとそのライブラリのパフォーマンスと設定の問題を解決するため，Flowを使ったElixirのコードをGPUの実行コードに変換することを提案した．これは，ElixirのコードはGPUで採用されているSIMDアーキテクチャに適合することに着眼した．
 
-次にロジスティック写像のベンチマークでHastegaの効果を示した．Rustで記述したネイティブコードをRustlerとoclを使って実装した．このことにより驚くほど設定が容易になる．我々の実装はGitHub\cite{logistic_map}に公開している．
+次にロジスティック写像のベンチマークでHastegaの効果を示した．Rustで記述したネイティブコードをRustlerとoclを使って実装した．我々の実装はGitHub\cite{logistic_map}に公開している．
 
 ElixirとRustlerを用いたGPGPUの試行的な実装のパフォーマンスを評価して下記のような結果が得られた．
 
@@ -198,4 +221,6 @@ ElixirとRustlerを用いたGPGPUの試行的な実装のパフォーマンス�
 
 この実験を通じて，Erlang VMは，主なオーバーヘッドの原因であるリストとベクターの変換を削減するような最適化をするにはパフォーマンスが不十分であることがわかった．したがって，Hastegaを，GPUを駆動してリストとベクターの返還を削減する最適化をするのに十分な能力を持つ新しいElixirの処理系として実装する．
 
-また，我々にはElixirで数学と機械学習のライブラリを実装する計画がある．もちろん，これらにもHastegaを適用し，Pythonと性能を比較したい．
+さらに設定容易性の評価を行った．その結果，CuPyと比べて，CUDAもしくはOpenCLのインストールの作業手順が大幅に簡素化されることがわかった．
+
+我々にはElixirで数学と機械学習のライブラリを実装する計画がある．もちろん，これらにもHastegaを適用し，Pythonと性能を比較したい．
