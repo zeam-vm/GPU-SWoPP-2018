@@ -85,7 +85,7 @@ CUDA\cite{CUDA}と，CuPy\cite{CuPy}のような関連ライブラリと比べ�
 
 これを採用した理由は，GPUのアセンブリコードに容易に変換できる整数演算を用いて負荷の高い計算をすることができるためである．
 
-我々はMac Pro (Mid 2010)とGCE\cite{GCE}という2つの環境で評価した．
+我々はMac Pro (Mid 2010)とGoogle Compute Engine(GCE)\cite{GCE}という2つの環境で評価した．
 
 1. Mac Pro (Mid 2010) は1つの2.8GHzのクアッドコア Intel Xeon のCPUと，16GB のメモリ，そして1024MBのメモリを持つATI Radeon HD 5770で構成される．
 
@@ -182,9 +182,9 @@ Python\_GPU                   & Python           & CuPy (GPU)     & N/A         
 
 # 設定容易性の評価
 
-\tabref{setting}にGCE(Google Compute Engine)\cite{GCE}上でのインストール・設定プロセスの比較を示す．
+\tabref{setting}にGCE\cite{GCE}上でのインストール・設定プロセスの比較を示す．
 
-Hastegaのインストールはビルドツールが自動で設定してくれるので煩雑ではない．必要なことは，OpenCL\cite{OpenCL}をインストールすること，Elixir\cite{Elixir}とRust\cite{Rust}をインストールして設定すること，Hastegaをインストールすることだけである．
+Hastegaのインストールはビルドツールが自動で設定してくれるので煩雑ではない．必要なことは，OpenCL\cite{OpenCL}/Elixir\cite{Elixir}/Rust\cite{Rust}/Hastegaをインストールすることだけである．
 
 
 CuPy\cite{CuPy}におけるCUDA\cite{CUDA}もしくはOpenCL\cite{OpenCL}のインストールは，Hastegaと比べてより多くの作業手順を必要とする．その理由は，Cupyが古いバージョンのCUDA\cite{CUDA}を必要とするからである．この解決方法を知るためにStack Overflow\cite{StackOverflow}のようなQ\&Aサイトを調べ上げる必要があった．
@@ -200,10 +200,11 @@ CuPyではプログラミング言語はPythonがプリインストールされ�
 {\small
 \begin{tabular}{lrr}
                                & \multicolumn{1}{l}{CuPy} & \multicolumn{1}{l}{Hastega} \\ \hline
-CUDAもしくはOpenCLのインストール   & 4                        & 1                           \\
+CUDAもしくはOpenCLのインストール   & 4 \dag                   & 1                           \\
 プログラミング言語のインストール     & 0                        & 4                           \\
 ライブラリのインストール           & 2                        & 1                           \\ \hline
 \end{tabular}
+\dag 相当時間のStackOverflowによる技術調査を要した
 }
 \end{table}
 
