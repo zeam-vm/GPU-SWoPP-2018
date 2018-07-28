@@ -163,12 +163,12 @@ CuPy \cite{CuPy}       & N/A                    & 4.1.0
            &                  &              &  (秒)        & (秒) \\ \hline
 Elixir\_recursive             & Elixir           & 再帰呼出し       & 12.177           & 9.674            \\
 Elixir\_inlining              & Elixir           & インライン展開    & 10.579           & 8.075            \\
-Rustler\_CPU                  & Elixir / Rustler & CPU            & 7.691            & 6.098            \\
+Rustler\_CPU                  & Elixir / Rustler & CPU (単一スレッド)      & 7.691            & 6.098            \\
 \rowcolor[HTML]{C0C0C0}
-Rustler\_CPU\_multi           & Elixir / Rustler & CPU            & 1.748            & 1.422              \\
+Rustler\_CPU\_multi           & Elixir / Rustler & CPU (マルチスレッド)     & 1.748            & 1.422              \\
 \rowcolor[HTML]{C0C0C0}
-Rustler\_GPU                  & Elixir / Rustler & OpenCL (GPU)   & 2.388            & 1.176            \\
-Empty                         & Elixir / Rustler & empty          & 1.859            & 0.852            \\
+Rustler\_GPU                  & Elixir / Rustler & Hastega: OpenCL (GPU)   & 2.388            & 1.176            \\
+Empty                         & Elixir / Rustler & ダミーベンチマーク & 1.859            & 0.852            \\
 Rust\_CPU                     & Rust             & CPU            & 2.926            & 1.829            \\
 \rowcolor[HTML]{C0C0C0}
 Rust\_CPU\_multi              & Rust             & CPU            & 0.669            & 0.374             \\
@@ -189,7 +189,9 @@ Hastegaのインストールはビルドツールが自動で設定してくれ�
 
 CuPy\cite{CuPy}におけるCUDA\cite{CUDA}もしくはOpenCL\cite{OpenCL}のインストールは，Hastegaと比べてより多くの作業手順を必要とする．その理由は，Cupyが古いバージョンのCUDA\cite{CUDA}を必要とするからである．この解決方法を知るためにStack Overflow\cite{StackOverflow}のようなQ\&Aサイトを調べ上げる必要があった．
 
-CuPyではプログラミング言語はPythonがプリインストールされているのに対し，HastegaではElixir\cite{Elixir}とRust\cite{Rust}という2つのプログラミング言語のインストールと設定を必要とする点が提案手法の方が多く作業手順を要している．
+CuPyではプログラミング言語はPythonがプリインストールされているのに対し，HastegaではElixir\cite{Elixir}とRust\cite{Rust}という2つのプログラミング言語のインストールと設定を必要とする点が提案手法の方が多く作業手順を要している．しかし，特別な設定は要しない．
+
+結果として，設定プロセス全体ではCuPyでは設定について調査を要する分，設定に多大な時間がかかった．作業項目数は変わらないが，総じてHastegaの方が設定は容易である．
 
 
 \begin{table}[t]
@@ -220,7 +222,7 @@ ElixirとRustlerを用いたGPGPUの試行的な実装のパフォーマンス�
 * 我々の方法でElixirとRustlerを用いてGPUを駆動するコードをGPUを駆動するネイティブコードと比較した時のパフォーマンスの違いは1.48--1.54倍である．
 * さらに，HastegaによってGPUを駆動するPythonコードと比べて3.67倍高速になった．
 
-この実験を通じて，Erlang VMは，主なオーバーヘッドの原因であるリストとベクターの変換を削減するような最適化をするにはパフォーマンスが不十分であることがわかった．したがって，Hastegaを，GPUを駆動してリストとベクターの返還を削減する最適化をするのに十分な能力を持つ新しいElixirの処理系として実装する．
+この実験を通じて，Erlang VMは，主なオーバーヘッドの原因であるリストとベクターの変換を削減するような最適化をするにはパフォーマンスが不十分であることがわかった．したがって，Hastegaを，GPUを駆動してリストとベクターの変換を削減する最適化をするのに十分な能力を持つ新しいElixirの処理系として実装する．
 
 さらに設定容易性の評価を行った．その結果，CuPyと比べて，CUDAもしくはOpenCLのインストールの作業手順が大幅に簡素化されることがわかった．
 
